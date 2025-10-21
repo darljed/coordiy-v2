@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "health": "node scripts/health-check.js"
+    "health": "node scripts/health-check.js",
+    "migrate:dev": "node scripts/migrate-dev.js",
+    "migrate:prod": "node scripts/migrate-prod.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

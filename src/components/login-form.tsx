@@ -77,7 +77,7 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem suppressHydrationWarning>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your email" autoComplete="email" {...field} />
@@ -91,7 +91,7 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem>
+                <FormItem suppressHydrationWarning>
                   <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
                     {onForgotPasswordClick && (

@@ -84,8 +84,8 @@ export function verifyPasswordResetToken(token: string): { email: string } | nul
  * Get current user from cookies
  */
 export async function getCurrentUser(): Promise<JWTPayload | null> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get('auth-token')?.value
+  const cookieStore = cookies()
+  const token = (await cookieStore).get('auth-token')?.value
   
   if (!token) return null
   
@@ -96,8 +96,8 @@ export async function getCurrentUser(): Promise<JWTPayload | null> {
  * Set authentication cookie
  */
 export async function setAuthCookie(token: string) {
-  const cookieStore = await cookies()
-  cookieStore.set('auth-token', token, {
+  const cookieStore = cookies()
+  ;(await cookieStore).set('auth-token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -109,6 +109,6 @@ export async function setAuthCookie(token: string) {
  * Clear authentication cookie
  */
 export async function clearAuthCookie() {
-  const cookieStore = await cookies()
-  cookieStore.delete('auth-token')
+  const cookieStore = cookies()
+  ;(await cookieStore).delete('auth-token')
 }

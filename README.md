@@ -87,8 +87,12 @@ npm install
 3. **Environment Setup**
 Create `.env` file:
 ```env
+# Environment
+NODE_ENV="development"
+
 # Database
-DATABASE_URL="postgresql://username:password@localhost:5432/coordiy"
+DATABASE_URL_DEV="postgresql://username:password@localhost:5432/coordiy_dev"
+DATABASE_URL_PROD="postgresql://username:password@localhost:5432/coordiy_prod"
 
 # Authentication
 JWT_SECRET="your-jwt-secret"
@@ -119,7 +123,12 @@ NEXTAUTH_URL="http://localhost:3000"
 
 4. **Database Setup**
 ```bash
-npx prisma migrate dev
+# For development
+npm run migrate:dev
+npx prisma generate
+
+# For production
+npm run migrate:prod
 npx prisma generate
 ```
 
@@ -173,6 +182,23 @@ npm run dev
 - Input validation with Zod schemas
 - CSRF protection via SameSite cookies
 - Environment variable protection
+
+## ⚙️ Environment Configuration
+
+The application uses environment-based database configuration:
+
+- **Development**: Uses `DATABASE_URL_DEV` when `NODE_ENV` is not "production"
+- **Production**: Uses `DATABASE_URL_PROD` when `NODE_ENV` is "production"
+- **Environment Detection**: Automatically selects the appropriate database URL based on `NODE_ENV`
+
+This ensures proper database separation between development and production environments.
+
+### Database Migration Scripts
+
+- `npm run migrate:dev` - Run migrations on development database
+- `npm run migrate:prod` - Run migrations on production database
+
+These scripts automatically use the correct database URL based on the environment.
 
 ## 📱 PWA Features
 

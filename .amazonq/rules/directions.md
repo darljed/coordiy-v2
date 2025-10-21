@@ -1,0 +1,3 @@
+- Everytime we make an update or create additional feature, always update the documentations and check for possible impact to other features.
+- Whenever we make changes to environment variables, always update example.env files to align properly with the main env files
+- Do not add any sensitive information to the example.env file

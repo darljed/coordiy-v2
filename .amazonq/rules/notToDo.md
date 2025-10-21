@@ -1,0 +1,1 @@
+- Never run `npm run dev` on your own, I always have it running on my end to avoid conflict on ports

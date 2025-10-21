@@ -1,0 +1,4 @@
+- make sure to use components from shadcn ui whenever possible
+- follow best practices and add comments as necessary to the code
+- always use sonner toast for prompting users about action results. 
+- let's use these colors as color scheme: primary=#F76C5E, secondary=#6AB7B9

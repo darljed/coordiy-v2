@@ -83,7 +83,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Forgot Password</CardTitle>
         <CardDescription>
-          Enter your email address and we'll send you a reset link
+          Enter your email address and we&apos;ll send you a reset link
         </CardDescription>
       </CardHeader>
       <CardContent>

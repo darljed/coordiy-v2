@@ -2,21 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { google } from 'googleapis'
 import { prisma } from '@/lib/prisma'
 import { generateToken, setAuthCookie } from '@/lib/auth'
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.NEXTAUTH_URL}/api/auth/google/callback`
-)
+import { getBaseUrl } from '@/lib/url'
 
 /**
  * GET /api/auth/google
  * Redirect to Google OAuth
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH !== "true") {
     return NextResponse.json({ error: 'Google authentication is disabled' }, { status: 403 })
   }
+
+  const baseUrl = getBaseUrl(request)
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    `${baseUrl}/api/auth/google/callback`
+  )
 
   const scopes = ['email', 'profile']
   
@@ -43,6 +45,13 @@ export async function POST(request: NextRequest) {
     if (!code) {
       return NextResponse.json({ error: 'Authorization code required' }, { status: 400 })
     }
+
+    const baseUrl = getBaseUrl(request)
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${baseUrl}/api/auth/google/callback`
+    )
 
     // Exchange code for tokens
     const { tokens } = await oauth2Client.getToken(code)

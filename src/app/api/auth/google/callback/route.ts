@@ -2,12 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { google } from 'googleapis'
 import { prisma } from '@/lib/prisma'
 import { generateToken, setAuthCookie } from '@/lib/auth'
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.NEXTAUTH_URL}/api/auth/google/callback`
-)
+import { getBaseUrl } from '@/lib/url'
 
 /**
  * GET /api/auth/google/callback
@@ -15,20 +10,28 @@ const oauth2Client = new google.auth.OAuth2(
  */
 export async function GET(request: NextRequest) {
   if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH !== "true") {
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=google_auth_disabled`)
+    const baseUrl = getBaseUrl(request)
+    return NextResponse.redirect(`${baseUrl}/?error=google_auth_disabled`)
   }
 
   try {
+    const baseUrl = getBaseUrl(request)
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${baseUrl}/api/auth/google/callback`
+    )
+
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const error = searchParams.get('error')
 
     if (error) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=google_auth_failed`)
+      return NextResponse.redirect(`${baseUrl}/?error=google_auth_failed`)
     }
 
     if (!code) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=missing_code`)
+      return NextResponse.redirect(`${baseUrl}/?error=missing_code`)
     }
 
     // Exchange code for tokens
@@ -40,7 +43,7 @@ export async function GET(request: NextRequest) {
     const { data: googleUser } = await oauth2.userinfo.get()
 
     if (!googleUser.email) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=no_email`)
+      return NextResponse.redirect(`${baseUrl}/?error=no_email`)
     }
 
     // Check if user exists by email
@@ -81,14 +84,20 @@ export async function GET(request: NextRequest) {
       avatar: user.avatar || undefined
     })
 
-    // Set auth cookie
-    await setAuthCookie(token)
+    // Redirect to dashboard with auth cookie
+    const response = NextResponse.redirect(`${baseUrl}/dashboard`)
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
 
-    // Redirect to dashboard
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard`)
+    return response
 
   } catch (error) {
     console.error('Google OAuth callback error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=auth_failed`)
+    const baseUrl = getBaseUrl(request)
+    return NextResponse.redirect(`${baseUrl}/?error=auth_failed`)
   }
 }

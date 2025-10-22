@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
 import { prisma } from '@/lib/prisma'
 import { generateToken, setAuthCookie } from '@/lib/auth'
+import { getBaseUrl } from '@/lib/url'
 
 /**
  * GET /api/auth/facebook/callback
@@ -9,20 +10,22 @@ import { generateToken, setAuthCookie } from '@/lib/auth'
  */
 export async function GET(request: NextRequest) {
   if (process.env.NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH !== "true") {
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=facebook_auth_disabled`)
+    const baseUrl = getBaseUrl(request)
+    return NextResponse.redirect(`${baseUrl}/?error=facebook_auth_disabled`)
   }
 
   try {
+    const baseUrl = getBaseUrl(request)
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const error = searchParams.get('error')
 
     if (error) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=facebook_auth_failed`)
+      return NextResponse.redirect(`${baseUrl}/?error=facebook_auth_failed`)
     }
 
     if (!code) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=missing_code`)
+      return NextResponse.redirect(`${baseUrl}/?error=missing_code`)
     }
 
     // Exchange code for access token
@@ -30,7 +33,7 @@ export async function GET(request: NextRequest) {
       params: {
         client_id: process.env.FACEBOOK_APP_ID,
         client_secret: process.env.FACEBOOK_APP_SECRET,
-        redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/facebook/callback`,
+        redirect_uri: `${baseUrl}/api/auth/facebook/callback`,
         code
       }
     })
@@ -48,7 +51,7 @@ export async function GET(request: NextRequest) {
     const facebookUser = userResponse.data
 
     if (!facebookUser.email) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=no_email`)
+      return NextResponse.redirect(`${baseUrl}/?error=no_email`)
     }
 
     // Check if user exists by email
@@ -89,14 +92,20 @@ export async function GET(request: NextRequest) {
       avatar: user.avatar || undefined
     })
 
-    // Set auth cookie
-    await setAuthCookie(token)
+    // Redirect to dashboard with auth cookie
+    const response = NextResponse.redirect(`${baseUrl}/dashboard`)
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
 
-    // Redirect to dashboard
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard`)
+    return response
 
   } catch (error) {
     console.error('Facebook OAuth callback error:', error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/?error=auth_failed`)
+    const baseUrl = getBaseUrl(request)
+    return NextResponse.redirect(`${baseUrl}/?error=auth_failed`)
   }
 }

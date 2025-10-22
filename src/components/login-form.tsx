@@ -72,12 +72,12 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem suppressHydrationWarning>
+                <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your email" autoComplete="email" {...field} />
@@ -91,7 +91,7 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem suppressHydrationWarning>
+                <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
                     {onForgotPasswordClick && (

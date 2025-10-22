@@ -62,10 +62,8 @@ export async function POST(request: NextRequest) {
       avatar: user.avatar || undefined
     })
 
-    // Set auth cookie
-    await setAuthCookie(token)
-
-    return NextResponse.json({
+    // Create response
+    const response = NextResponse.json({
       message: 'Login successful',
       user: {
         id: user.id,
@@ -74,6 +72,16 @@ export async function POST(request: NextRequest) {
         emailVerified: user.emailVerified
       }
     })
+
+    // Set auth cookie
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
+
+    return response
 
   } catch (error) {
     if (error instanceof z.ZodError) {

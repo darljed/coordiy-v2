@@ -121,7 +121,7 @@ export function DashboardLayout({ user, children, breadcrumbs = [{ label: "Dashb
         </SidebarFooter>
       </Sidebar>
       
-      <main className="flex-1 p-6 bg-muted/50 rounded-tl-lg">
+      <main className="flex-1 md:p-2 lg:p-6 bg-muted/50 rounded-tl-lg">
         <div className="bg-background rounded-lg border h-full flex flex-col">
           <div className="flex items-center justify-between p-6 border-b">
             <div className="flex items-center space-x-4">

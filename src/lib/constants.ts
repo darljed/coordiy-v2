@@ -4,7 +4,7 @@ export const APP_CONFIG = {
   tagline: "Your coordination platform",
   supportEmail: "darl@darl.dev",
   baseUrl: process.env.NEXTAUTH_URL || "http://localhost:3000",
-  logo: "/coordiy_long_logo.png",
+  logo: "/coordiy_long.svg",
   logoMini: "/coordiy_logo.png",
   colors: {
     primary: "#F76C5E",

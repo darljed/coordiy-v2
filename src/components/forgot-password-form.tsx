@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
+import Image from "next/image"
+import { APP_CONFIG } from "@/lib/constants"
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address")
@@ -59,6 +61,15 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   if (isSubmitted) {
     return (
       <Card className="w-full max-w-md">
+        <div className="flex justify-center pt-6">
+          <Image
+            src={APP_CONFIG.logo}
+            alt={APP_CONFIG.name}
+            width={200}
+            height={40}
+            className="h-10 w-auto"
+          />
+        </div>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Check Your Email</CardTitle>
           <CardDescription>
@@ -80,6 +91,15 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
 
   return (
     <Card className="w-full max-w-md">
+      <div className="flex justify-center pt-6">
+        <Image
+          src={APP_CONFIG.logo}
+          alt={APP_CONFIG.name}
+          width={200}
+          height={40}
+          className="h-10 w-auto"
+        />
+      </div>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Forgot Password</CardTitle>
         <CardDescription>

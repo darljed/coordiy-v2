@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import Image from "next/image"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { APP_CONFIG } from "@/lib/constants"
 
@@ -63,16 +63,18 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Login</CardTitle>
-        <CardDescription>
-          Enter your email and password to access your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <div className="space-y-6">
+      <div className="flex justify-center">
+        <Image
+          src={APP_CONFIG.logo}
+          alt={APP_CONFIG.name}
+          width={200}
+          height={40}
+          className="h-10 w-auto"
+        />
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
@@ -201,9 +203,8 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
                 Sign up
               </Button>
             </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        </form>
+      </Form>
+    </div>
   )
 }

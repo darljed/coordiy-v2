@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import Link from "next/link"
+import Image from "next/image"
+import { APP_CONFIG } from "@/lib/constants"
 
 const signupSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
@@ -72,6 +74,15 @@ export function SignupFormClient({ onSuccess }: SignupFormProps) {
 
   return (
     <Card className="w-full max-w-md">
+      <div className="flex justify-center pt-6">
+        <Image
+          src={APP_CONFIG.logo}
+          alt={APP_CONFIG.name}
+          width={200}
+          height={40}
+          className="h-10 w-auto"
+        />
+      </div>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
         <CardDescription>

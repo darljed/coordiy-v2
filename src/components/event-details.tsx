@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Calendar, MapPin, ArrowLeft, Save, Type, CalendarDays } from 'lucide-react'
+import { Calendar, MapPin, ArrowLeft, Save, Type, CalendarDays, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 import { useRouter } from 'next/navigation'
@@ -28,7 +28,7 @@ const eventFormSchema = z.object({
 })
 
 export function EventDetails({ eventId }: EventDetailsProps) {
-  const { events, updateEvent } = useEvents()
+  const { events, updateEvent, deleteEvent } = useEvents()
   const router = useRouter()
   const event = events.find(e => e.id === eventId)
   
@@ -44,6 +44,8 @@ export function EventDetails({ eventId }: EventDetailsProps) {
     if (!event) return false
     return event.start_date.getTime() !== event.end_date.getTime()
   })
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
@@ -102,6 +104,12 @@ export function EventDetails({ eventId }: EventDetailsProps) {
       end_date: endDate,
     })
     toast.success('Event updated successfully!')
+  }
+
+  const handleDelete = () => {
+    deleteEvent(eventId)
+    toast.success('Event deleted successfully!')
+    router.push('/dashboard/events')
   }
 
   return (
@@ -231,8 +239,47 @@ export function EventDetails({ eventId }: EventDetailsProps) {
               </Button>
             </form>
           </Form>
+
+          <div className="pt-6 border-t">
+            <Button 
+              type="button" 
+              variant="destructive" 
+              className="w-full"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Event
+            </Button>
+          </div>
         </div>
       </div>
+
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-2">Delete Event</h2>
+            <p className="text-muted-foreground mb-6">
+              Are you sure you want to delete "{event.event_title}"? This action cannot be undone.
+            </p>
+            <div className="flex space-x-3">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowDeleteDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="destructive" 
+                className="flex-1"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

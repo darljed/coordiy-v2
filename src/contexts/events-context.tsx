@@ -14,6 +14,7 @@ interface EventsContextType {
   events: Event[]
   addEvent: (event: Omit<Event, 'id'>) => void
   updateEvent: (id: string, event: Omit<Event, 'id'>) => void
+  deleteEvent: (id: string) => void
 }
 
 const EventsContext = createContext<EventsContextType | undefined>(undefined)
@@ -57,8 +58,12 @@ export function EventsProvider({ children }: { children: ReactNode }) {
     ))
   }
 
+  const deleteEvent = (id: string) => {
+    setEvents(prev => prev.filter(event => event.id !== id))
+  }
+
   return (
-    <EventsContext.Provider value={{ events, addEvent, updateEvent }}>
+    <EventsContext.Provider value={{ events, addEvent, updateEvent, deleteEvent }}>
       {children}
     </EventsContext.Provider>
   )

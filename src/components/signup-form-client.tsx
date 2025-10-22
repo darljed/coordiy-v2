@@ -81,6 +81,8 @@ export function SignupFormClient({ onSuccess }: SignupFormProps) {
           width={200}
           height={40}
           className="h-10 w-auto"
+          priority
+          style={{ width: 'auto', height: '40px' }}
         />
       </div>
       <CardHeader className="space-y-1">

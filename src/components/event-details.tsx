@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useEvents } from '@/contexts/events-context'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -222,13 +222,24 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <CalendarComponent
-                      mode={isDateRange ? "range" : "single"}
-                      selected={date}
-                      onSelect={setDate}
-                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                      initialFocus
-                    />
+                    {isDateRange ? (
+                      <CalendarComponent
+                        mode="range"
+                        selected={date as DateRange}
+                        onSelect={setDate}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                        required
+                      />
+                    ) : (
+                      <CalendarComponent
+                        mode="single"
+                        selected={date as Date}
+                        onSelect={setDate}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                      />
+                    )}
                   </PopoverContent>
                 </Popover>
               </div>
@@ -259,7 +270,7 @@ export function EventDetails({ eventId }: EventDetailsProps) {
           <div className="bg-background rounded-lg p-6 w-full max-w-md">
             <h2 className="text-lg font-semibold mb-2">Delete Event</h2>
             <p className="text-muted-foreground mb-6">
-              Are you sure you want to delete "{event.event_title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{event.event_title}&quot;? This action cannot be undone.
             </p>
             <div className="flex space-x-3">
               <Button 

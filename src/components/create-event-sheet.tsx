@@ -173,13 +173,24 @@ export function CreateEventSheet() {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode={isDateRange ? "range" : "single"}
-                      selected={date}
-                      onSelect={setDate}
-                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                      initialFocus
-                    />
+                    {isDateRange ? (
+                      <Calendar
+                        mode="range"
+                        selected={date as DateRange}
+                        onSelect={setDate}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                        required
+                      />
+                    ) : (
+                      <Calendar
+                        mode="single"
+                        selected={date as Date}
+                        onSelect={setDate}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                      />
+                    )}
                   </PopoverContent>
                 </Popover>
               </div>
